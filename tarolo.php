@@ -9,18 +9,20 @@
 </head>
 <body background="gray">
 <p align="center">
-        <font  size="50px">Schönherz kerékpár tároló</font>
+        <font size="50px">Schönherz kerékpár tároló</font>
 </p>
                 <?php
                         $loggedin = isset($_SERVER['REMOTE_USER']);
                         print "<nav class='navbar navbar-default' role='navigation'>";
-                        if(!$loggedin)
-                                print "<font color='darkblue'><b><a class='btn btn-default btn-block' href='https://stewie.sch.bme.hu/Shibboleth.sso/Login?target=https://stewie.sch.bme.hu/geri/tarolo.php'>Bejelentkezés</a></b></font>
-                                A helyre jelentkezés csak bejelentkezés után érhető el.";
-                        else
-                                print "<div id='leiras'>
-                                <p><font color='darkblue'><b><a href='https://stewie.sch.bme.hu/Shibboleth.sso/Logout?target=https://stewie.sch.bme.hu/geri/tarolo.php'>Kijelentkezés</a></b></font></p>
-                                </div>";
+                        if(!$loggedin) : ?>
+                                <div ><p class='navbar-text'>A helyre jelentkezés csak bejelentkezés után érhető el.</p>  
+                                <a class='btn btn-primary btn-lg' href='https://stewie.sch.bme.hu/Shibboleth.sso/Login?target=https://stewie.sch.bme.hu/geri/tarolo.php'>Bejelentkezés</a>
+                                </div>
+                        <?php else : ?>
+                                <div ><p class='navbar-text'>Bejelentkezve: <?= htmlspecialchars($_SERVER['HTTP_COMMON_NAME']) ?></p>
+                                <a class='btn btn-primary btn-lg' href='https://stewie.sch.bme.hu/Shibboleth.sso/Logout?target=https://stewie.sch.bme.hu/geri/tarolo.php'>Kijelentkezés</a>
+                                </div>
+                        <?php endif;
                         print "</nav><div id='helyek' class='col-md-4'>
                         <table  class='table table-bordered'>";
                         print "<thead><tr>
