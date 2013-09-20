@@ -2,12 +2,15 @@
 <head>
 <meta charset='utf-8'>
 <title> Bicikli hely foglalás</title>
-<link href="tarolo.css" rel="stylesheet" type="text/css">
+<link href="dist/css/bootstrap.min.css" rel="stylesheet">
 
+<script src="dist/js/bootstrap.min.js"></script>
 </head>
 <body background="gray">
                 <?php
                         $loggedin = isset($_SERVER['REMOTE_USER']);
+                        if(!$loggedin)
+                                header("location:tarolo.php");
 			require 'db.php';			
                         
                         try{
@@ -29,6 +32,7 @@
                         	$count++;
                         	if($row['state']!=0) $count+=10;
                         }
+                        print "<p class='lead'>";
                         if($count==1)
                         {
                         	$name = pg_escape_string($_SERVER['HTTP_COMMON_NAME']);
@@ -52,10 +56,10 @@
                         }
                         else
                         	print "Error: A hely nem üres";
-
+                        print "</p>";
                         $dbconn=null;
                 ?>
                 <br/>
-                <button onclick= 'window.location = "tarolo.php";'>Vissza</button>
+                <a href="tarolo.php" class="btn btn-default">Vissza</a>
         </body>
 </html>

@@ -20,7 +20,7 @@
                                 </div>
                         <?php else : ?>
                                 <div ><p class='navbar-text'>Bejelentkezve: <?= htmlspecialchars($_SERVER['HTTP_COMMON_NAME']) ?></p>
-                                <a class='btn btn-primary btn-lg' href='https://stewie.sch.bme.hu/Shibboleth.sso/Logout?target=https://stewie.sch.bme.hu/geri/tarolo.php'>Kijelentkezés</a>
+                                <a class='btn btn-default' href='https://stewie.sch.bme.hu/Shibboleth.sso/Logout?target=https://stewie.sch.bme.hu/geri/tarolo.php'>Kijelentkezés</a>
                                 </div>
                         <?php endif;
                         print "</nav><div id='helyek' class='col-md-4'>

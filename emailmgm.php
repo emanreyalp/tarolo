@@ -1,6 +1,9 @@
 <html>
 <head>
-	<meta charset='utf-8'>
+<meta charset='utf-8'>
+<link href="dist/css/bootstrap.min.css" rel="stylesheet">
+
+<script src="dist/js/bootstrap.min.js"></script>
 
 </head>
 <body>
@@ -8,14 +11,14 @@
 		Az itt megadott emailcímre értesítés fog érkezni amikor valaki helyre jelentkezik. Ha nem szeretnél értesítéseket kapni, akkor üres mezőt adj be.
 	</p>
 	<?php
-		session_start();
-			if(!session_is_registered("usrnm"))
+		$loggedin = isset($_SERVER['REMOTE_USER']);
+			if(!$loggedin)
 			{
-				header("location:adminlogin.html");
+				header("location:https://stewie.sch.bme.hu/Shibboleth.sso/Login?target=https://stewie.sch.bme.hu/geri/taroloadmin.php");
 			}
 			else
 			{
-			require 'db.php';
+				require 'db.php';
 	            try{
 	                    $dbconn = new PDO("pgsql:host=localhost;port=5432;dbname=bicikli",$user ,$pass);
 	            }
@@ -27,7 +30,10 @@
 	            {
 	                    print "DB connection Error";
 	            }
-	            $adminuser=$_SESSION['username'];
+	            $adminuser = pg_escape_string($_SERVER['REMOTE_USER']);
+	            $sql = "SELECT * FROM admin WHERE username='$adminuser'";
+	            if($dbconn->query($sql)->rowCount()!=1)
+            		header("location:https://stewie.sch.bme.hu/Shibboleth.sso/Login?target=https://stewie.sch.bme.hu/geri/taroloadmin.php");
 	            if(isset($_POST['email']))
 	            {
 	            	$email = pg_escape_string($_POST['email']);
@@ -40,12 +46,19 @@
 	            $result = $dbconn->query($sql);
 	            $row = $result->fetchObject();
 	            $curemail = $row->email;
-	            print "<p><form  action='#' method='post'> <input type='text' name='email' size='30' value='$curemail'><td><input type='submit' value='Submit'></td></form></p>";
+	            print "
+			            <form  action='#' method='post' class='form-inline'>
+			            <div class='col-md-4'>
+						    <input type='email' class='form-control' id='InputEmail' placeholder='Enter email'>
+						    </div>
+						  	<button type='submit' class='btn btn-primary'>Submit</button>
+					  	</form>
+				  	";
 
 
 	            $dbconn = null;
 	        }
 	?>
-<button onclick= 'window.location = "taroloadmin.php";'>Vissza</button>
+	<a href="taroloadmin.php" class="btn btn-default">Vissza</a>
 </body>
 </html>

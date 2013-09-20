@@ -17,14 +17,14 @@
 		<td>Sorszám</td><td>Név</td><td>állapot</td><td>Szerzõdés?</td><td>Kulcs?</td><td>Időszak</td><td>Emailcím</td><td></td><td>Megjegyzés</td><td>modosítás dátuma</td><td>ki modosította</td>
 	</tr>
 	<?php
-		session_start();
-		if(!session_is_registered("usrnm"))
+		$loggedin = isset($_SERVER['REMOTE_USER']);
+		if(!$loggedin)
 		{
-			header("location:adminlogin.html");
+			header("location:https://stewie.sch.bme.hu/Shibboleth.sso/Login?target=https://stewie.sch.bme.hu/geri/taroloadmin.php");
 		}
 		else
 		{
-		require 'db.php';
+			require 'db.php';
             try{
                     $dbconn = new PDO("pgsql:host=localhost;port=5432;dbname=bicikli",$user ,$pass);
             }
@@ -36,6 +36,11 @@
             {
                     print "DB connection Error";
             }
+            $remuser = pg_escape_string($_SERVER['REMOTE_USER']);
+            $sql = "SELECT * FROM admin WHERE username='$remuser'";
+            if($dbconn->query($sql)->rowCount()!=1)
+            	header("location:https://stewie.sch.bme.hu/Shibboleth.sso/Login?target=https://stewie.sch.bme.hu/geri/taroloadmin.php");
+
             //Esetleges POST kezelése db-be
             if(isset($_POST['id']))
             {
@@ -49,7 +54,7 @@
             	$idoszak=pg_escape_string($_POST['idoszak']);
             	$comment=pg_escape_string($_POST['comment']);
             	$useremail=pg_escape_string($_POST['email']);
-            	$modifyadmin=$_SESSION['username'];
+            	$modifyadmin=pg_escape_string($_SERVER['HTTP_COMMON_NAME']);
             	if($state==1 || $state==3)
             		$sql = "UPDATE helyek SET name='$name', state='$state', szerzodes='$szerzodes', haskey='$haskey', idoszak='$idoszak', comment='$comment', useremail='$useremail', modifydate=CURRENT_TIMESTAMP, modifyadmin='$modifyadmin' WHERE id='$id'";
             	else
